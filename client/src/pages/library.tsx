@@ -4,14 +4,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, AlertCircle } from "lucide-react";
+import { BookOpen, Library } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
-export default function Library() {
-  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+export default function LibraryPage() {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { data: libraryItems, isLoading: isLibraryLoading } = useLibrary();
   const updateProgress = useUpdateProgress();
+  const [filter, setFilter] = useState("all");
 
   if (isAuthLoading || isLibraryLoading) {
     return (
@@ -45,6 +47,13 @@ export default function Library() {
     );
   }
 
+  const filteredItems = libraryItems?.filter(item => {
+    if (filter === "reading") return (item.progress || 0) > 0 && (item.progress || 0) < 100;
+    if (filter === "completed") return item.progress === 100;
+    if (filter === "favorites") return item.isFavorite;
+    return true;
+  });
+
   if (!libraryItems || libraryItems.length === 0) {
     return (
       <Layout>
@@ -64,14 +73,44 @@ export default function Library() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-12">
+      {/* Local Navigation */}
+      <div className="bg-white/50 border-b py-4">
+        <div className="container mx-auto px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Library className="w-4 h-4 text-primary" />
+            <span className="text-sm font-bold text-primary uppercase tracking-wider">My Collection</span>
+          </div>
+          <div className="flex gap-1 bg-secondary/30 p-1 rounded-xl">
+            {[
+              { id: "all", label: "All" },
+              { id: "reading", label: "Reading" },
+              { id: "completed", label: "Completed" },
+              { id: "favorites", label: "Favorites" }
+            ].map((tab) => (
+              <Button
+                key={tab.id}
+                variant={filter === tab.id ? "default" : "ghost"}
+                size="sm"
+                className="rounded-lg h-8 px-4 text-xs"
+                onClick={() => setFilter(tab.id)}
+              >
+                {tab.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold font-display text-primary">My Library</h1>
-          <p className="text-muted-foreground">{libraryItems.length} Books</p>
+          <h1 className="text-3xl font-bold font-display text-primary">
+            {filter === "all" ? "All Books" : filter.charAt(0).toUpperCase() + filter.slice(1)}
+          </h1>
+          <p className="text-muted-foreground">{filteredItems?.length || 0} Books</p>
         </div>
 
         <div className="space-y-6">
-          {libraryItems.map((item, index) => (
+          {filteredItems?.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 10 }}
@@ -120,7 +159,6 @@ export default function Library() {
                       </div>
 
                       <div className="mt-6 flex flex-wrap gap-3">
-                         {/* Mock reading functionality updates progress randomly for demo */}
                          <Button 
                            onClick={() => {
                              const newProgress = Math.min((item.progress || 0) + 10, 100);

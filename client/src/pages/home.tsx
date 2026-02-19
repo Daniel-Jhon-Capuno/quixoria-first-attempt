@@ -4,13 +4,24 @@ import { BookCard } from "@/components/book-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 
 export default function Home() {
   const { data: books, isLoading, error } = useBooks();
   const [search, setSearch] = useState("");
+  const [location] = useLocation();
+
+  // Sync search from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get("search");
+    if (searchParam) {
+      setSearch(searchParam);
+    }
+  }, [location]);
 
   const filteredBooks = books?.filter(book => 
     book.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -20,75 +31,72 @@ export default function Home() {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-primary text-primary-foreground py-20 px-4">
-        {/* Abstract background shapes */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-black/10 rounded-full blur-2xl" />
-
-        <div className="container mx-auto relative z-10 text-center max-w-3xl">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight leading-tight"
-          >
-            Discover Your Next<br />
-            <span className="text-secondary">Great Adventure</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl mx-auto"
-          >
-            A curated collection of digital books for the modern reader. 
-            Build your library, track your progress, and get lost in stories.
-          </motion.p>
+      {/* Search Header (Local Navigation) */}
+      <div className="bg-white/50 border-b py-4">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-primary" />
+            <span className="text-sm font-bold text-primary uppercase tracking-wider">Browse Store</span>
+          </div>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="relative max-w-md mx-auto"
-          >
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-muted-foreground" />
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {['All', 'Classic', 'Dystopian', 'Fiction', 'Romance', 'Fantasy'].map((genre) => (
+              <Button 
+                key={genre} 
+                variant={search === (genre === 'All' ? '' : genre) ? "default" : "ghost"}
+                size="sm"
+                className="rounded-xl h-8 px-4"
+                onClick={() => setSearch(genre === 'All' ? "" : genre)}
+              >
+                {genre}
+              </Button>
+            ))}
+          </div>
+
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              type="text"
-              placeholder="Search by title, author, or genre..."
-              className="pl-10 h-12 rounded-xl bg-white text-foreground shadow-xl border-0 focus-visible:ring-2 focus-visible:ring-secondary"
+              placeholder="Search store..." 
+              className="pl-9 h-9 rounded-xl border-primary/10 bg-background"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Hero Section */}
+      {!search && (
+        <section className="relative overflow-hidden bg-primary text-primary-foreground py-16 px-4">
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-black/10 rounded-full blur-2xl" />
+
+          <div className="container mx-auto relative z-10 text-center max-w-3xl">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight leading-tight"
+            >
+              Welcome back to <span className="text-secondary">StorySteam</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg opacity-90 mb-0 max-w-2xl mx-auto"
+            >
+              Ready to turn the next page? Explore our collection of cozy digital reads.
+            </motion.p>
+          </div>
+        </section>
+      )}
 
       {/* Book Grid */}
       <section className="container mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold font-display text-primary">
-            {search ? `Search Results for "${search}"` : "Featured Collection"}
+            {search ? `Results for "${search}"` : "Featured for You"}
           </h2>
-          <div className="hidden md:flex gap-2">
-            {['Fiction', 'Sci-Fi', 'Mystery', 'Romance'].map((genre) => (
-              <Button 
-                key={genre} 
-                variant="outline" 
-                size="sm"
-                className="rounded-full border-primary/20 hover:border-primary hover:bg-primary/5 text-primary"
-                onClick={() => setSearch(genre)}
-              >
-                {genre}
-              </Button>
-            ))}
-            {search && (
-              <Button variant="ghost" size="sm" onClick={() => setSearch("")} className="text-muted-foreground">
-                Clear
-              </Button>
-            )}
-          </div>
         </div>
 
         {isLoading ? (
