@@ -75,15 +75,15 @@ export default function Home() {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight leading-tight"
+              className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight leading-tight text-center"
             >
-              Welcome back to <span className="text-secondary">StorySteam</span>
+              Welcome back to <span className="text-secondary">Quixoria</span>
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-lg opacity-90 mb-0 max-w-2xl mx-auto"
+              className="text-lg opacity-90 mb-0 max-w-2xl mx-auto text-center"
             >
               Ready to turn the next page? Explore our collection of cozy digital reads.
             </motion.p>

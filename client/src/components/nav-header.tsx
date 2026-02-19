@@ -36,7 +36,7 @@ export function NavHeader() {
             <BookOpen className="h-6 w-6" />
           </div>
           <span className="font-display font-bold text-xl tracking-tight text-primary hidden sm:inline">
-            StorySteam
+            Quixoria
           </span>
         </Link>
 
@@ -78,7 +78,7 @@ export function NavHeader() {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" className="rounded-xl hidden sm:flex items-center gap-2 text-muted-foreground hover:text-primary hover:bg-secondary h-10 px-3">
               <CreditCard className="h-4 w-4" />
-              <span className="text-xs font-bold">$0.00</span>
+              <span className="text-xs font-bold">₱0.00</span>
             </Button>
             
             {user ? (
