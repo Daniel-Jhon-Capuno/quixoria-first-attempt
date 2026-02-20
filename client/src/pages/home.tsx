@@ -134,9 +134,9 @@ export default function Home() {
             ) : filteredBooks?.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-xl text-muted-foreground font-medium">No books found matching your search.</p>
-                <Button variant="link" onClick={() => setSearch("")} className="mt-2 text-primary">
-                  View all books
-                </Button>
+            <Button variant="outline" onClick={() => setSearch("")} className="mt-2 text-primary">
+              View all books
+            </Button>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
