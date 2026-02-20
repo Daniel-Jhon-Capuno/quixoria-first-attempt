@@ -1,7 +1,7 @@
 import { useLibrary, useUpdateProgress } from "@/hooks/use-books";
 import { Layout } from "@/components/layout";
 import { useAuth } from "@/hooks/use-auth";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Library } from "lucide-react";
@@ -14,6 +14,7 @@ export default function LibraryPage() {
   const { data: libraryItems, isLoading: isLibraryLoading } = useLibrary();
   const updateProgress = useUpdateProgress();
   const [filter, setFilter] = useState("all");
+  const [, setLocation] = useLocation();
 
   if (isAuthLoading || isLibraryLoading) {
     return (

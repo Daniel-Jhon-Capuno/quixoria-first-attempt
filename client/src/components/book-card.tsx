@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Book } from "@shared/schema";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ export function BookCard({ book }: BookCardProps) {
   const { user } = useAuth();
   const { data: library } = useLibrary();
   const addToLibrary = useAddToLibrary();
+  const [, setLocation] = useLocation();
   
   const isOwned = library?.some(item => item.bookId === book.id);
   const formattedPrice = new Intl.NumberFormat('en-PH', {

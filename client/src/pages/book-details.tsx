@@ -1,4 +1,4 @@
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { useBook, useReviews, useAddToLibrary, useCreateReview } from "@/hooks/use-books";
 import { useAuth } from "@/hooks/use-auth";
 import { Layout } from "@/components/layout";
@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function BookDetails() {
   const [, params] = useRoute("/book/:id");
+  const [, setLocation] = useLocation();
   const id = parseInt(params?.id || "0");
   const { user } = useAuth();
   const { data: book, isLoading } = useBook(id);

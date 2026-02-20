@@ -8,6 +8,8 @@ import Home from "@/pages/home";
 import Library from "@/pages/library";
 import BookDetails from "@/pages/book-details";
 import Profile from "@/pages/profile";
+import Reader from "@/pages/reader";
+import Checkout from "@/pages/checkout";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +19,8 @@ function Router() {
       <Route path="/library" component={Library} />
       <Route path="/book/:id" component={BookDetails} />
       <Route path="/profile" component={Profile} />
+      <Route path="/reader/:id" component={Reader} />
+      <Route path="/checkout/:id" component={Checkout} />
       <Route component={NotFound} />
     </Switch>
   );
