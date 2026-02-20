@@ -32,6 +32,10 @@ export default function Home() {
     book.genre.toLowerCase().includes(search.toLowerCase())
   );
 
+  const recommendedBooks = books?.filter(b => (b.rating || 0) >= 4).slice(0, 5);
+  const seasonalBooks = books?.filter(b => ["Classic", "Fiction"].includes(b.genre)).slice(0, 5);
+  const genreRelatedBooks = books?.filter(b => b.genre === "Fantasy").slice(0, 5);
+
   return (
     <Layout>
       {/* Search Header (Local Navigation) */}
@@ -104,46 +108,136 @@ export default function Home() {
 
       {/* Book Grid */}
       <section id="featured-books" className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold font-display text-primary">
-            {search ? `Results for "${search}"` : "Featured for You"}
-          </h2>
-        </div>
+        {search ? (
+          <>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold font-display text-primary">
+                Results for "{search}"
+              </h2>
+            </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="space-y-3">
-                <Skeleton className="h-[300px] w-full rounded-xl" />
-                <Skeleton className="h-4 w-3/4 rounded" />
-                <Skeleton className="h-4 w-1/2 rounded" />
+            {isLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {[...Array(10)].map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="h-[300px] w-full rounded-xl" />
+                    <Skeleton className="h-4 w-3/4 rounded" />
+                    <Skeleton className="h-4 w-1/2 rounded" />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="text-center py-20 bg-destructive/5 rounded-2xl border border-destructive/20">
-            <h3 className="text-xl font-bold text-destructive mb-2">Failed to load books</h3>
-            <p className="text-muted-foreground">Please try refreshing the page later.</p>
-          </div>
-        ) : filteredBooks?.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-xl text-muted-foreground font-medium">No books found matching your search.</p>
-            <Button variant="link" onClick={() => setSearch("")} className="mt-2 text-primary">
-              View all books
-            </Button>
-          </div>
+            ) : error ? (
+              <div className="text-center py-20 bg-destructive/5 rounded-2xl border border-destructive/20">
+                <h3 className="text-xl font-bold text-destructive mb-2">Failed to load books</h3>
+                <p className="text-muted-foreground">Please try refreshing the page later.</p>
+              </div>
+            ) : filteredBooks?.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-xl text-muted-foreground font-medium">No books found matching your search.</p>
+                <Button variant="link" onClick={() => setSearch("")} className="mt-2 text-primary">
+                  View all books
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {filteredBooks?.map((book, i) => (
+                  <motion.div
+                    key={book.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: i * 0.05 }}
+                  >
+                    <BookCard book={book} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {filteredBooks?.map((book, i) => (
-              <motion.div
-                key={book.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-              >
-                <BookCard book={book} />
-              </motion.div>
-            ))}
+          <div className="space-y-16">
+            {/* Recommended for You */}
+            {user && recommendedBooks && recommendedBooks.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-display text-primary">Recommended for you</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {recommendedBooks.map((book, i) => (
+                    <motion.div
+                      key={book.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <BookCard book={book} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Seasonal Picks */}
+            {seasonalBooks && seasonalBooks.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-display text-primary">Seasonal Picks</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {seasonalBooks.map((book, i) => (
+                    <motion.div
+                      key={book.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <BookCard book={book} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Based on your searches */}
+            {user && genreRelatedBooks && genreRelatedBooks.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-display text-primary">Because you like Fantasy</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {genreRelatedBooks.map((book, i) => (
+                    <motion.div
+                      key={book.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <BookCard book={book} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All Books */}
+            {!isLoading && books && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-display text-primary">All Books</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {books.map((book, i) => (
+                    <motion.div
+                      key={book.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <BookCard book={book} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </section>
