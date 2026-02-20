@@ -8,9 +8,12 @@ import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import windmillImg from "@assets/Windmill-removebg-preview.png_1_1771580321179.png";
 
 export default function Home() {
   const { data: books, isLoading, error } = useBooks();
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [location] = useLocation();
 
@@ -67,32 +70,40 @@ export default function Home() {
 
       {/* Hero Section */}
       {!search && (
-        <section className="relative overflow-hidden bg-primary text-primary-foreground py-16 px-4">
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-black/10 rounded-full blur-2xl" />
-
-          <div className="container mx-auto relative z-10 text-center max-w-3xl">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight leading-tight text-center"
-            >
-              Welcome back to <span className="text-secondary">Quixoria</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-lg opacity-90 mb-0 max-w-2xl mx-auto text-center"
-            >
-              Ready to turn the next page? Explore our collection of cozy digital reads.
-            </motion.p>
+        <section className="container mx-auto px-4 py-8">
+          <div className="bg-[#FBEFD7] border-[#7D3B25] border rounded-[2rem] p-8 md:p-12 relative overflow-hidden shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="relative z-10 flex-1 text-center md:text-left">
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-[#7D3B25] mb-4">
+                Hello, {user?.firstName || "Reader"}!
+              </h1>
+              <p className="text-xl md:text-2xl text-[#7D3B25] font-serif-book mb-8">
+                Start your reading adventure<br />
+                here in Quixoria!
+              </p>
+              <Button 
+                className="bg-[#7D3B25] hover:bg-[#632f1d] text-white rounded-xl px-8 py-6 text-lg font-bold shadow-lg shadow-[#7D3B25]/20"
+                onClick={() => {
+                  const featuredSection = document.getElementById('featured-books');
+                  featuredSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Show Suggestion
+              </Button>
+            </div>
+            
+            <div className="relative w-48 h-48 md:w-64 md:h-64 shrink-0">
+              <img 
+                src={windmillImg} 
+                alt="Windmill" 
+                className="w-full h-full object-contain opacity-90"
+              />
+            </div>
           </div>
         </section>
       )}
 
       {/* Book Grid */}
-      <section className="container mx-auto px-4 py-12">
+      <section id="featured-books" className="container mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold font-display text-primary">
             {search ? `Results for "${search}"` : "Featured for You"}
