@@ -59,10 +59,18 @@ export default function BookDetails() {
     setComment("");
   };
 
-  const formattedPrice = new Intl.NumberFormat('en-US', {
+  const formattedPrice = new Intl.NumberFormat('en-PH', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'PHP',
   }).format(book.price / 100);
+
+  const handleBuyClick = () => {
+    if (!user) {
+      window.location.href = '/api/login';
+      return;
+    }
+    setLocation(`/checkout/${book.id}`);
+  };
 
   return (
     <Layout>
@@ -113,11 +121,10 @@ export default function BookDetails() {
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto text-lg px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30"
-                  onClick={() => user ? addToLibrary.mutate(book.id) : window.location.href = '/api/login'}
-                  disabled={addToLibrary.isPending}
+                  onClick={handleBuyClick}
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  {addToLibrary.isPending ? "Adding..." : "Buy Now"}
+                  Buy Now
                 </Button>
               </div>
             </div>

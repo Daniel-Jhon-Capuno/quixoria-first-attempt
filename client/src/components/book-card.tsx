@@ -16,9 +16,9 @@ export function BookCard({ book }: BookCardProps) {
   const addToLibrary = useAddToLibrary();
   
   const isOwned = library?.some(item => item.bookId === book.id);
-  const formattedPrice = new Intl.NumberFormat('en-US', {
+  const formattedPrice = new Intl.NumberFormat('en-PH', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'PHP',
   }).format(book.price / 100);
 
   return (
@@ -71,11 +71,10 @@ export function BookCard({ book }: BookCardProps) {
             <Button 
               size="sm" 
               className="rounded-lg shadow-md hover:shadow-lg transition-all"
-              onClick={() => user ? addToLibrary.mutate(book.id) : window.location.href = '/api/login'}
-              disabled={addToLibrary.isPending}
+              onClick={() => user ? setLocation(`/checkout/${book.id}`) : window.location.href = '/api/login'}
             >
               <ShoppingCart className="w-4 h-4 mr-1" />
-              {addToLibrary.isPending ? "Adding..." : "Buy"}
+              Buy
             </Button>
           )}
         </CardFooter>

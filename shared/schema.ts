@@ -51,10 +51,6 @@ export const libraryItemsRelations = relations(libraryItems, ({ one }) => ({
     fields: [libraryItems.bookId],
     references: [books.id],
   }),
-  user: one(users, {
-    fields: [libraryItems.userId],
-    references: [users.id],
-  }),
 }));
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({

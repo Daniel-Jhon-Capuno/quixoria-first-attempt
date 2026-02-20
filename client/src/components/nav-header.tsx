@@ -13,6 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
+import logoImg from "@assets/Black_and_White_Minimalist_Simple_Writers_Club_Logo_1_1771579851366.png";
+
 export function NavHeader() {
   const [location, setLocation] = useLocation();
   const { user, logout } = useAuth();
@@ -32,8 +34,8 @@ export function NavHeader() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <div className="bg-primary text-primary-foreground p-2 rounded-lg group-hover:scale-110 transition-transform">
-            <BookOpen className="h-6 w-6" />
+          <div className="bg-primary overflow-hidden p-0 rounded-lg group-hover:scale-110 transition-transform w-10 h-10 flex items-center justify-center">
+            <img src={logoImg} alt="Quixoria Logo" className="w-full h-full object-cover invert" />
           </div>
           <span className="font-display font-bold text-xl tracking-tight text-primary hidden sm:inline">
             Quixoria

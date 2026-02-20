@@ -161,11 +161,9 @@ export default function LibraryPage() {
                       <div className="mt-6 flex flex-wrap gap-3">
                          <Button 
                            onClick={() => {
-                             const newProgress = Math.min((item.progress || 0) + 10, 100);
-                             updateProgress.mutate({ id: item.id, progress: newProgress });
+                             setLocation(`/reader/${item.bookId}`);
                            }}
                            className="bg-primary hover:bg-primary/90"
-                           disabled={updateProgress.isPending}
                          >
                            <BookOpen className="w-4 h-4 mr-2" />
                            {item.progress === 0 ? "Start Reading" : item.progress === 100 ? "Read Again" : "Continue Reading"}
