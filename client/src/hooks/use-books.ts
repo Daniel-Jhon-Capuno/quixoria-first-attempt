@@ -36,7 +36,7 @@ export function useLibrary() {
     queryKey: [api.library.list.path],
     queryFn: async () => {
       const res = await fetch(api.library.list.path, { credentials: "include" });
-      if (res.status === 401) return null;
+      if (res.status === 401) return [];
       if (!res.ok) throw new Error("Failed to fetch library");
       return api.library.list.responses[200].parse(await res.json());
     },

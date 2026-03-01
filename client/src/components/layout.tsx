@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { NavHeader } from "./nav-header";
+import { Footer } from "./footer";
 import { Toaster } from "@/components/ui/toaster";
+import { HelpWidget } from "@/components/help-widget";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -9,12 +11,9 @@ export function Layout({ children }: { children: ReactNode }) {
       <main className="flex-1 w-full">
         {children}
       </main>
-      <footer className="border-t py-8 bg-white/30 text-center text-sm text-muted-foreground mt-auto">
-        <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} Quixoria. Your cozy corner for digital reading.</p>
-        </div>
-      </footer>
+      <Footer />
       <Toaster />
+      <HelpWidget />
     </div>
   );
 }
